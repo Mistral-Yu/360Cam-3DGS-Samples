@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3DGS テストページ</title>
+    <style>
+      :root { color-scheme: dark; }
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+        background: #111;
+        color: #f4f4f4;
+      }
+      header {
+        padding: 16px;
+        border-bottom: 1px solid #333;
+        background: #161616;
+      }
+      h1 {
+        margin: 0 0 8px;
+        font-size: 1.3rem;
+      }
+      .subtitle {
+        margin: 0;
+        font-size: 0.95rem;
+        color: #d0d0d0;
+      }
+      .description {
+        margin: 12px 0 0;
+        padding-left: 1.1rem;
+        color: #e3e3e3;
+        font-size: 0.9rem;
+        line-height: 1.5;
+      }
+      .description li + li {
+        margin-top: 6px;
+      }
+      #app {
+        width: 100vw;
+        height: calc(100vh - 168px);
+      }
+      .note {
+        position: fixed;
+        bottom: 10px;
+        left: 10px;
+        padding: 8px 10px;
+        border-radius: 8px;
+        background: rgba(0, 0, 0, 0.5);
+        font-size: 0.85rem;
+      }
+      .error {
+        color: #ff7373;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>3DGS 描画テストページ</h1>
+      <p class="subtitle">PlayCanvas を使用して PLY 形式の 3D Gaussian Splatting データを表示する検証ページです。</p>
+      <ul class="description">
+        <li><strong>ページ概要:</strong> 3DGS モデルの読み込みと描画、カメラ操作の挙動を確認できます。</li>
+        <li><strong>操作方法:</strong> 左ドラッグで回転、マウスホイールでズームします。</li>
+        <li><strong>読み込み対象:</strong> <code>assets/test-3dgs.ply</code> を表示します。</li>
+      </ul>
+    </header>
+    <canvas id="app"></canvas>
+    <div id="status" class="note">PlayCanvas + 3DGS を初期化中...</div>
+
+    <script src="https://cdn.jsdelivr.net/npm/playcanvas@2.6.0/build/playcanvas.min.js"></script>
+    <script>
+      const statusNode = document.getElementById('status');
+      const canvas = document.getElementById('app');
+
+      const app = new pc.Application(canvas, {
+        mouse: new pc.Mouse(document.body),
+        touch: new pc.TouchDevice(document.body)
+      });
+
+      app.setCanvasFillMode(pc.FILLMODE_FILL_WINDOW);
+      app.setCanvasResolution(pc.RESOLUTION_AUTO);
+      app.start();
+
+      window.addEventListener('resize', () => app.resizeCanvas(canvas.width, canvas.height));
+
+      app.scene.ambientLight = new pc.Color(0.2, 0.2, 0.2);
+
+      const camera = new pc.Entity('camera');
+      camera.addComponent('camera', {
+        clearColor: new pc.Color(0.05, 0.05, 0.08),
+        farClip: 100
+      });
+      camera.setPosition(0, 0, 2);
+      app.root.addChild(camera);
+
+      const light = new pc.Entity('light');
+      light.addComponent('light', {
+        type: 'directional',
+        intensity: 1.3
+      });
+      light.setEulerAngles(45, 35, 0);
+      app.root.addChild(light);
+
+      const orbit = {
+        yaw: 0,
+        pitch: 0,
+        distance: 2,
+        dragging: false,
+        lastX: 0,
+        lastY: 0
+      };
+
+      app.mouse.on('mousedown', (e) => {
+        if (e.button === 0) {
+          orbit.dragging = true;
+          orbit.lastX = e.x;
+          orbit.lastY = e.y;
+        }
+      });
+      app.mouse.on('mouseup', () => orbit.dragging = false);
+      app.mouse.on('mousemove', (e) => {
+        if (!orbit.dragging) return;
+        const dx = e.x - orbit.lastX;
+        const dy = e.y - orbit.lastY;
+        orbit.lastX = e.x;
+        orbit.lastY = e.y;
+        orbit.yaw -= dx * 0.2;
+        orbit.pitch = pc.math.clamp(orbit.pitch - dy * 0.2, -85, 85);
+      });
+      app.mouse.on('mousewheel', (e) => {
+        orbit.distance = pc.math.clamp(orbit.distance + e.wheel * 0.15, 0.5, 12);
+      });
+
+      app.on('update', () => {
+        const yaw = orbit.yaw * pc.math.DEG_TO_RAD;
+        const pitch = orbit.pitch * pc.math.DEG_TO_RAD;
+        const x = orbit.distance * Math.cos(pitch) * Math.sin(yaw);
+        const y = orbit.distance * Math.sin(pitch);
+        const z = orbit.distance * Math.cos(pitch) * Math.cos(yaw);
+        camera.setPosition(x, y, z);
+        camera.lookAt(0, 0, 0);
+      });
+
+      const gsplatAsset = new pc.Asset('test-3dgs', 'gsplat', {
+        url: 'assets/test-3dgs.ply'
+      });
+
+      gsplatAsset.on('error', (err) => {
+        statusNode.textContent = '3DGS読み込み失敗: ' + err;
+        statusNode.classList.add('error');
+      });
+
+      gsplatAsset.ready(() => {
+        const splat = new pc.Entity('test-splat');
+        splat.addComponent('gsplat', {
+          asset: gsplatAsset
+        });
+        app.root.addChild(splat);
+        statusNode.textContent = 'テスト3DGSデータを描画中（ドラッグ回転 / ホイールズーム）';
+      });
+
+      app.assets.add(gsplatAsset);
+      app.assets.load(gsplatAsset);
+    </script>
+  </body>
+</html>
