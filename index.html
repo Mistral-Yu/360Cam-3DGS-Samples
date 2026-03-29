@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>360Cam-PGM-3DGS-Tools | Workflow Guide and Public Samples</title>
+  <meta
+    name="description"
+    content="A simple public page for 360Cam-PGM-3DGS-Tools with a workflow guide and public samples."
+  >
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="site-header-inner">
+      <a class="brand" href="#top">360Cam-PGM-3DGS-Tools</a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="#workflow">Workflow</a>
+        <a href="#scene">Public Samples</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top" class="page">
+    <section class="intro">
+      <p class="intro-kicker">Public Page</p>
+      <h1>Workflow Guide and Public Samples</h1>
+      <p class="intro-text">
+        This page introduces the workflow guide and public sample scenes for
+        360Cam-PGM-3DGS-Tools.
+      </p>
+      <div class="intro-actions">
+        <a class="button button-primary" href="#workflow">View workflow</a>
+        <a class="button button-secondary" href="#scene">View samples</a>
+      </div>
+      <dl class="meta-list">
+        <div>
+          <dt>Workflow</dt>
+          <dd>360Cam-PGM-3DGS_Workflow.drawio.html</dd>
+        </div>
+        <div>
+          <dt>Tool</dt>
+          <dd>360Cam-PGM-3DGS-Tools</dd>
+        </div>
+        <div>
+          <dt>Samples</dt>
+          <dd>Large Dataset / Small Dataset</dd>
+        </div>
+      </dl>
+    </section>
+
+    <section id="workflow" class="section-block">
+        <div class="section-heading">
+        <h2>Workflow</h2>
+        <p>The original draw.io HTML is embedded below.</p>
+        </div>
+
+        <div class="embed-shell">
+          <div class="embed-meta">
+            <span>360Cam-PGM-3DGS-Tools</span>
+            <span>Open separate page</span>
+          </div>
+          <div class="embed-preview">
+            <iframe
+              class="embed-frame"
+              title="360Cam-PGM-3DGS Rapid Workflow preview"
+              src="./360Cam-PGM-3DGS_Workflow.drawio.html"
+              loading="lazy"
+              tabindex="-1"
+            ></iframe>
+            <a class="embed-overlay" href="./360Cam-PGM-3DGS_Workflow.drawio.html">
+              Open workflow page
+            </a>
+          </div>
+        </div>
+    </section>
+
+    <section id="scene" class="section-block">
+        <div class="section-heading">
+        <h2>Public Samples</h2>
+        <p>Choose a tab to switch scenes. The default sample is Large Dataset.</p>
+        </div>
+
+        <div class="viewer-shell">
+          <div class="viewer-toolbar">
+            <div class="scene-tabs" role="tablist" aria-label="Sample scenes">
+              <button
+                class="scene-tab is-active"
+                type="button"
+                role="tab"
+                aria-selected="true"
+                data-scene="large"
+              >
+                Large Dataset
+              </button>
+              <button
+                class="scene-tab"
+                type="button"
+                role="tab"
+                aria-selected="false"
+                data-scene="small"
+              >
+                Small Dataset
+              </button>
+            </div>
+            <button class="button button-primary" type="button" id="load-scene">
+              Load 3DGS Scene
+            </button>
+          </div>
+
+          <div class="viewer-stage" id="viewer-stage">
+            <div class="viewer-placeholder" id="viewer-placeholder">
+              <p class="placeholder-title" id="sample-scene-title">Large Dataset</p>
+              <p class="placeholder-text" id="sample-scene-text">Default public sample</p>
+            </div>
+          </div>
+        </div>
+    </section>
+  </main>
+
+  <script src="./script.js" defer></script>
+</body>
+</html>
