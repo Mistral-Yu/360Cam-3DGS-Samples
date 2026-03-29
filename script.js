@@ -12,12 +12,12 @@ function setupSceneLoader() {
   const scenes = {
     large: {
       title: "Large Dataset",
-      text: "Default public sample",
+      text: "Default generated result",
       src: "https://superspl.at/s?id=306bbd50",
     },
     small: {
       title: "Small Dataset",
-      text: "Existing public sample",
+      text: "Generated result",
       src: "https://superspl.at/s?id=9550345b",
     },
   };
