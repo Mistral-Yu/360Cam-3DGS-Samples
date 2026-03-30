@@ -12,18 +12,18 @@ function setupSceneLoader() {
   const scenes = {
     large: {
       title: "Large Dataset",
-      text: "Default generated result",
+      text: "Generated with LichtFeld Studio",
       src: "https://superspl.at/s?id=306bbd50",
     },
     small: {
       title: "Small Dataset",
-      text: "Generated result",
-      src: "https://superspl.at/s?id=9550345b",
+      text: "Generated with LichtFeld Studio",
+      src: "https://superspl.at/s?id=9de97301",
     },
   };
 
   let isLoaded = false;
-  let currentScene = "large";
+  let currentScene = "small";
   let viewerFrame = null;
 
   const updateTabState = () => {
